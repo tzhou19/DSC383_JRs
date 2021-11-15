@@ -2,8 +2,8 @@ import pandas as pd
 import numpy as np
 import math
 
-decision_list = ['year', 'Completed', 'School_Decision', 'student_Decision',
-             'final_Decision', 'Been_On_Waitinglist']
+decision_list = ['year', 'completed', 'school_Decision', 'student_Decision',
+             'final_Decision']
 gre_list = ['GRE Verbal', 'GRE Verbal Percentile', 
               'GRE Quantitative', 'GRE Quantitative Percentile', 'GRE Analytical Writing', 
              'GRE Analytical Writing Percentile', 'GRE Verified']
@@ -50,6 +50,15 @@ def extract_year(text):
         if char.isnumeric() == True:
             result += char
     return result
+
+def decision_cleaned(df_raw):
+    df_decision = df_raw.copy()
+    df_decision['year'] = [extract_year(ele) for ele in df_decision['Entry Term']]
+    df_decision['school_Decision'] = [school_cleaned(ele) for ele in df_decision['Decision 1']]
+    df_decision['student_Decision'] = [student_cleaned(ele) for ele in df_decision['Decision 1']]
+    df_decision['final_Decision'] = [final_cleaned(ele) for ele in df_decision['Decision 1']]
+    df_decision['completed'] = np.where(df_decision['Decision 1'].isnull(), 0, 1)
+    return df_decision
 
 def GRE_cleaned(df_raw):
     df_gre = df_raw.copy()
